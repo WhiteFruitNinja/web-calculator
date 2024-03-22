@@ -5,30 +5,48 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.9</version>
+        <version>3.2.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.spring</groupId>
     <artifactId>calculator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <!-- Paketas(archyvas)Kuriame bus sudėti visi aplikacijos moduliai. War naudojamas aplikacijos įdėjimui į tomcat serverį. -->
-    <packaging>war</packaging>
+
+    <!-- Package(Archive) where are all app packets exist. "War" is used to put everything to TomCat server -->
+    <packaging>jar</packaging>
     <name>calculator</name>
     <description>Web calculator</description>
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
     </properties>
+
+
     <dependencies>
-        <!--  Biblioteka skirta Spring Boot aplikacijoms. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!-- Biblioteka skirta testams. -->
+
+        <!-- For JUnit tests -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-jasper -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -37,11 +55,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <image>
-                        <builder>paketobuildpacks/builder-jammy-base:latest</builder>
-                    </image>
-                </configuration>
             </plugin>
         </plugins>
     </build>
