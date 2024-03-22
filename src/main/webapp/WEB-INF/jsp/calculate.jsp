@@ -5,6 +5,6 @@
     <title>Calculate</title>
 </head>
 <body>
-    <h2>${num1} ${symbol} ${num2} = ${result}</h2>
+    <h2>${number1} ${symbol} ${number2} = ${result}</h2>
 </body>
 </html>

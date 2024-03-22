@@ -7,8 +7,8 @@
 <body>
     <h2>Web Calculator. Operations: Add | Subtract | Multiply | Divide</h2>
     <form method="post" action="calculate">
-        First number: <input type = "number" name="num1"><p>
-        Second number: <input type = "number" name="num2"><p>
+        First number: <input type = "number" name="number1"><p>
+        Second number: <input type = "number" name="number2"><p>
         Operation symbol:
         <select name="symbol">
                 <option selected="selected" value="+">Add</option>
