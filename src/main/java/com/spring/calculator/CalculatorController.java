@@ -37,9 +37,11 @@ public class CalculatorController {
 
     @PostMapping("/calculate")
     // Naudotis @RequestParam reikia, kai raktai skiriasi nuo frontendo ir backendo
-    String calculate(@Valid @ModelAttribute("number") Number e, BindingResult br,
+    // Jeigu daroma validacija, tai pirmas parametras eina su @Valid anotacija, o antras - @BindigResult
+    String calculate(@Valid @ModelAttribute("number") Number number, BindingResult br,
                      @RequestParam HashMap<String, String> numbers, ModelMap modelMap) {
         if (br.hasErrors()) {
+            // Jeigu pagaunama valdicajos klaida, vartotojas turi likti pradiniame lange
             return "calculator";
         } else {
             int number1 = Integer.parseInt(numbers.get("number1"));
