@@ -1,14 +1,33 @@
-package com.spring.calculator;
+package com.spring.calculator.model;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 
+@Entity
+@Table(name = "numbers")
 public class Number {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "number_id")
+    private int id;
     @Min(value = 0, message = "Validation error: Number cannot be negative.")
+    @Column(name = "number1")
     private int number1;
     @Min(value = 0, message = "Validation error: Number cannot be negative")
+    @Column(name = "number2")
     private int number2;
+    @Column(name = "operation")
     private String operation;
+    @Column(name = "result")
     private int result;
+
+    public Number(int id, int number1, int number2, String operation, int result) {
+        this.id = id;
+        this.number1 = number1;
+        this.number2 = number2;
+        this.operation = operation;
+        this.result = result;
+    }
 
     public Number(int number1, int number2, String operation, int result) {
         this.number1 = number1;
@@ -18,6 +37,10 @@ public class Number {
     }
 
     public Number() {
+    }
+
+    public int getId() {
+        return id;
     }
 
     public int getNumber1() {
@@ -55,7 +78,8 @@ public class Number {
     @Override
     public String toString() {
         return "Number{" +
-                "number1=" + number1 +
+                "id=" + id +
+                ", number1=" + number1 +
                 ", number2=" + number2 +
                 ", operation='" + operation + '\'' +
                 ", result=" + result +

@@ -1,6 +1,11 @@
-package com.spring.calculator;
+package com.spring.calculator.controller;
 
+import com.spring.calculator.model.Number;
+import com.spring.calculator.service.NumberService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -21,7 +26,11 @@ import java.util.HashMap;
 // Remiasi priklausomybėmis (JAR bibliotekomis), kurias programuotojas įtraukia į projektą (pom.xml)
 // šiuo atveju ji veikia kartu su main metodu.
 
+@EnableAutoConfiguration
 public class CalculatorController {
+    @Autowired
+    @Qualifier("NumberService")
+    public NumberService numberService;
     // Maršrutizavimo informacija. Šiuo atveju ji nurodo Spring karkasui,
     // kad visos HTTP užklausos, kurių kelias yra "/", bus apdorotos metodo home().
     @RequestMapping(method = RequestMethod.GET, value = "/")
@@ -63,6 +72,8 @@ public class CalculatorController {
             modelMap.put("number2", number2);
             modelMap.put("operation", operation);
             modelMap.put("result", result);
+
+            numberService.save(new Number(number1, number2, operation, result));
 
             // prefiksas + jsp failo pavadinimas + sufiksas
             return "calculate";
