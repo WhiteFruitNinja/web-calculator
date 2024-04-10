@@ -6,7 +6,7 @@ import jakarta.persistence.EntityTransaction;
 
 import java.util.List;
 
-public class NumberDAOImpl implements NumberDAO{
+public class NumberDAOImpl implements NumberDAO {
     @Override
     public void insertEntity(Number number) {
         EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();

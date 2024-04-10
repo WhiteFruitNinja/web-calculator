@@ -31,6 +31,7 @@ public class CalculatorController {
     @Autowired
     @Qualifier("NumberService")
     public NumberService numberService;
+
     // Maršrutizavimo informacija. Šiuo atveju ji nurodo Spring karkasui,
     // kad visos HTTP užklausos, kurių kelias yra "/", bus apdorotos metodo home().
     @RequestMapping(method = RequestMethod.GET, value = "/")
@@ -45,8 +46,8 @@ public class CalculatorController {
     // @RequestMapping(method = RequestMethod.POST, value = "/calculate")
 
     @PostMapping("/calculate")
-    // Naudotis @RequestParam reikia, kai raktai skiriasi nuo frontendo ir backendo
-    // Jeigu daroma validacija, tai pirmas parametras eina su @Valid anotacija, o antras - @BindigResult
+        // Naudotis @RequestParam reikia, kai raktai skiriasi nuo frontendo ir backendo
+        // Jeigu daroma validacija, tai pirmas parametras eina su @Valid anotacija, o antras - @BindigResult
     String calculate(@Valid @ModelAttribute("number") Number number, BindingResult br,
                      @RequestParam HashMap<String, String> numbers, ModelMap modelMap) {
         if (br.hasErrors()) {

@@ -13,6 +13,7 @@ public class JPAUtil {
         }
         return factory;
     }
+
     public static void shutdown() {
         if (factory != null) {
             factory.close();

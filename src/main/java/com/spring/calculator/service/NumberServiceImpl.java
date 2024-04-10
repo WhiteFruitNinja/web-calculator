@@ -7,10 +7,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 
-public class NumberServiceImpl implements NumberService{
+public class NumberServiceImpl implements NumberService {
     @Autowired
     @Qualifier("NumberDAO")
     public NumberDAO numberDAO;
+
     @Override
     public List<Number> getAll() {
         return numberDAO.findEntities();
