@@ -3,7 +3,8 @@
 
 <html lang="en">
     <head>
-        <title>Calculate</title>
+        <title>Calculate</title
+        <jsp:include page="header.jsp"/>
         <style>
             .error{color:red}
         </style>
