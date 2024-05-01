@@ -32,6 +32,6 @@ public class SpringConfig {
     @Bean
     @Qualifier("UserService")
     public UserService getUserService() {
-        return new UserServiceImpl(userRepository);
+        return new UserServiceImpl();
     }
 }

@@ -1,8 +1,10 @@
 package com.spring.calculator.controller;
 
 import com.spring.calculator.model.User;
+import com.spring.calculator.service.SecurityService;
 import com.spring.calculator.service.UserService;
 import com.spring.calculator.utils.BCryptPassword;
+import com.spring.calculator.validator.UserValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -22,9 +24,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 @EnableAutoConfiguration
 public class UserController {
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    @Autowired
+    private UserService userService;
 
-    private final UserService userService;
+    @Autowired
+    private SecurityService securityService;
+
+    @Autowired
+    private UserValidator userValidator;
+
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     public UserController(@Qualifier("UserService") UserService userService) {
@@ -45,43 +54,37 @@ public class UserController {
 
     @PostMapping("/register")
     public String registerNewUser(@Valid @ModelAttribute("user") User user, BindingResult result) {
-        if (result.hasErrors()) {
+        userValidator.validate(user, result);
+
+        if (result.hasErrors()){
             return "register";
         }
-        // Check if the password is valid
-        if (!isValidPassword(user.getPassword())) {
-            result.rejectValue("password", "error.user", "Your password must be at least 8 characters long and contain at least one letter, one number, and one special character among @$!%*#?&.");
-            return "register";
-        }
-        if (!user.getPassword().equals(user.getPasswordConfirm())) {
-            result.rejectValue("passwordConfirm", "error.user", "Passwords do not match");
-            return "register";
-        }
-        // Check if the username already exists
-        if (userService.getUserByUsername(user.getUsername()) != null) {
-            result.rejectValue("username", "error.user", "Username already exists");
-            return "register";
-        }
-        // Check if the email already exists
-        if (userService.getUserByEmail(user.getEmail()) != null) {
-            result.rejectValue("email", "error.user", "Email already exists");
-            return "register";
-        }
-        // Save the user to the database
-        userService.createUser(user);
-        return "redirect:/login";
+
+        userService.save(user);
+
+        securityService.autoLogin(user.getUsername(), user.getPasswordConfirm());
+
+        return "redirect:/calculator";
     }
 
+    /*
     private boolean isValidPassword(String password) {
         return password != null && password.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$");
     }
+    */
 
     @GetMapping(value = "/login")
-    public String showLoginForm(Model model) {
-        model.addAttribute("user", new User());
+    public String showLoginForm(Model model, String error, String logout) {
+        if (error != null)
+            model.addAttribute("error", "Įvestas prisijungimo varadsa ir/ arba slaptažodis yra neteisingi");
+
+        if (logout != null)
+            model.addAttribute("message", "Sėkmingai atsijungėte");
+
         return "login";
     }
 
+    /*
     @PostMapping("/loginUser")
     public String loginUser(@ModelAttribute("user") User loginUser, HttpSession session, Model model) {
         // Retrieve the user from the database based on the provided username
@@ -107,6 +110,7 @@ public class UserController {
             return "redirect:/login";
         }
     }
+    */
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
