@@ -32,7 +32,7 @@ public class User {
     private String password;
 
     @Transient
-    @NotBlank(message = "Password conformation is required")
+    @NotBlank(message = "Password confirmation is required")
     private String passwordConfirm;
 
     public User(int id, String username, String role, String email, String password, String passwordConfirm) {

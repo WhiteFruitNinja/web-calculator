@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 @EnableAutoConfiguration
 public class UserController {
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
 
     @Autowired
     private SecurityService securityService;
@@ -67,11 +67,10 @@ public class UserController {
         return "redirect:/calculator";
     }
 
-    /*
+
     private boolean isValidPassword(String password) {
         return password != null && password.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$");
     }
-    */
 
     @GetMapping(value = "/login")
     public String showLoginForm(Model model, String error, String logout) {
@@ -84,11 +83,11 @@ public class UserController {
         return "login";
     }
 
-    /*
+
     @PostMapping("/loginUser")
     public String loginUser(@ModelAttribute("user") User loginUser, HttpSession session, Model model) {
         // Retrieve the user from the database based on the provided username
-        User userFromDB = userService.getUserByUsername(loginUser.getUsername());
+        User userFromDB = userService.findByUsername(loginUser.getUsername());
 
         // Check if the user exists
         if (userFromDB == null || !BCryptPassword.checkPassword(loginUser.getPassword(), userFromDB.getPassword())) {
@@ -110,7 +109,6 @@ public class UserController {
             return "redirect:/login";
         }
     }
-    */
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {

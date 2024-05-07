@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
 // SecurityService reikalingas esamo vartotojo prisijungimui ir automatiniam prisijungimui vartotojo po registracijos
 @Service
 public class SecurityServiceImpl implements SecurityService{
-    @Autowired
+
+    //@Autowired
     private AuthenticationManager authenticationManager;
 
     @Qualifier("userDetailsServiceImpl")
