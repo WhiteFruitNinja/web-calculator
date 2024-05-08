@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,6 +27,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class UserController {
 
     private final UserService userService;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     private SecurityService securityService;
@@ -60,52 +64,46 @@ public class UserController {
             return "register";
         }
 
-        userService.save(user);
+        userService.createUser(user);
 
         securityService.autoLogin(user.getUsername(), user.getPasswordConfirm());
 
-        return "redirect:/calculator";
+        return "redirect:/login";
     }
 
-
+    /*
     private boolean isValidPassword(String password) {
         return password != null && password.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$");
     }
+    */
 
     @GetMapping(value = "/login")
-    public String showLoginForm(Model model, String error, String logout) {
-        if (error != null)
-            model.addAttribute("error", "Įvestas prisijungimo varadsa ir/ arba slaptažodis yra neteisingi");
-
-        if (logout != null)
-            model.addAttribute("message", "Sėkmingai atsijungėte");
-
+    public String showLoginForm(Model model) {
+        model.addAttribute("user", new User());
         return "login";
     }
 
 
     @PostMapping("/loginUser")
-    public String loginUser(@ModelAttribute("user") User loginUser, HttpSession session, Model model) {
+    public String loginUser(@ModelAttribute("user") User loginUser, HttpSession session, Model model, BindingResult result) {
         // Retrieve the user from the database based on the provided username
-        User userFromDB = userService.findByUsername(loginUser.getUsername());
+        User userFromDB = userService.getUserByUsername(loginUser.getUsername());
 
-        // Check if the user exists
-        if (userFromDB == null || !BCryptPassword.checkPassword(loginUser.getPassword(), userFromDB.getPassword())) {
-            model.addAttribute("errorMessage", "Username or password incorrect");
+        userValidator.validate(loginUser, result);
+
+        if (result.hasErrors()){
             return "login";
         }
 
-        // Log the entered username and hashed password for debugging purposes
         logger.info("Entered Username: {}", loginUser.getUsername());
-        logger.info("Entered Password (Hashed): {}", BCryptPassword.hashPassword(loginUser.getPassword()));
+        logger.info("Entered Password (Hashed): {}", bCryptPasswordEncoder.encode(loginUser.getPassword()));
 
         // Compare the hashed passwords using the checkPassword method
-        if (BCryptPassword.checkPassword(loginUser.getPassword(), userFromDB.getPassword())) {
+        if (bCryptPasswordEncoder.matches(loginUser.getPassword(), userFromDB.getPassword())) {
             // Passwords match, user is authenticated
             session.setAttribute("username", userFromDB.getUsername());
             return "redirect:/calculator"; // Redirect to the user's profile page
         } else {
-
             return "redirect:/login";
         }
     }

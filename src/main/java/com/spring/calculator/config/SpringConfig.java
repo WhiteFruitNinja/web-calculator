@@ -2,14 +2,12 @@ package com.spring.calculator.config;
 
 import com.spring.calculator.repository.NumberRepository;
 import com.spring.calculator.repository.UserRepository;
-import com.spring.calculator.service.NumberService;
-import com.spring.calculator.service.NumberServiceImpl;
-import com.spring.calculator.service.UserService;
-import com.spring.calculator.service.UserServiceImpl;
+import com.spring.calculator.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 @Configuration
 public class SpringConfig {
@@ -32,6 +30,12 @@ public class SpringConfig {
     @Bean
     @Qualifier("UserService")
     public UserService getUserService() {
-        return new UserServiceImpl();
+        return new UserServiceImpl(userRepository);
+    }
+
+    @Bean
+    @Qualifier("UserDetailsService")
+    public UserDetailsService getUserDetailsService() {
+        return new UserDetailsServiceImpl();
     }
 }
