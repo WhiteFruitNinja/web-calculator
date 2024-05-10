@@ -3,10 +3,8 @@ package com.spring.calculator.controller;
 import com.spring.calculator.model.User;
 import com.spring.calculator.service.SecurityService;
 import com.spring.calculator.service.UserService;
-import com.spring.calculator.utils.BCryptPassword;
 import com.spring.calculator.validator.UserValidator;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -66,7 +64,7 @@ public class UserController {
 
         userService.createUser(user);
 
-        securityService.autoLogin(user.getUsername(), user.getPasswordConfirm());
+        //securityService.autoLogin(user.getUsername(), user.getPasswordConfirm());
 
         return "redirect:/login";
     }
