@@ -19,7 +19,7 @@ public class User {
     @Column(name = "role")
     private String role;
 
-    @Email(message = "Enter a valid email adress")
+    @Email(message = "Enter a valid email address")
     @NotBlank(message = "Email is required")
     @Column(name = "email")
     private String email;

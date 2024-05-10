@@ -64,16 +64,10 @@ public class UserController {
 
         userService.createUser(user);
 
-        //securityService.autoLogin(user.getUsername(), user.getPasswordConfirm());
+        securityService.autoLogin(user.getUsername(), user.getPasswordConfirm());
 
         return "redirect:/login";
     }
-
-    /*
-    private boolean isValidPassword(String password) {
-        return password != null && password.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$");
-    }
-    */
 
     @GetMapping(value = "/login")
     public String showLoginForm(Model model) {
