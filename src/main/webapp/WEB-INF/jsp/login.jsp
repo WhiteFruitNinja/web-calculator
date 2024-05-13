@@ -34,7 +34,7 @@
         }
 
         .error {
-                    color: #ff3f3f;
+            color: #ff3f3f;
         }
 
     </style>
@@ -47,27 +47,15 @@
 
         <div class="form-group">
             <label for="username">Username</label>
-            <form:input path="username" type="text" class="form-control" id="username" placeholder="Enter username"/>
+            <form:input path="username" value="${user.username}" type="text" class="form-control" id="username" placeholder="Enter username"/>
             <form:errors cssClass="error" path="username"/>
         </div>
 
         <div class="form-group">
             <label for="password">Password</label>
-            <form:input path="password" type="password" class="form-control" id="password" placeholder="Password"/>
+            <form:input path="password" value="${user.password}" type="password" class="form-control" id="password" placeholder="Password"/>
             <form:errors cssClass="error" path="password"/>
         </div>
-
-        <!-- Error message -->
-        <%
-            String errorMessage = (String) request.getAttribute("errorMessage");
-            if (errorMessage != null && !errorMessage.isEmpty()) {
-        %>
-        <div class="alert alert-danger" role="alert">
-            <%= errorMessage %>
-        </div>
-        <%
-            }
-        %>
 
         <button type="submit" class="btn btn-primary">Login</button>
         <a type="button" href="${pageContext.request.contextPath}/register" class="button">Register</a>

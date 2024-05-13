@@ -28,7 +28,7 @@ public class UserValidator implements Validator {
         User user = (User) target;
         User userFromDB = userService.getUserByUsername(user.getUsername());
 
-        // Tells user that these fields are required
+        // Username validation
         if (user.getUsername().isEmpty()) {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "User.NotEmpty.username");
 
@@ -40,7 +40,7 @@ public class UserValidator implements Validator {
 
         }
 
-
+        //Password validation
         if (user.getPassword().isEmpty()) {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "User.NotEmpty.password");
 
@@ -48,7 +48,7 @@ public class UserValidator implements Validator {
             errors.rejectValue("password", "User.size.password");
         }
 
-
+        //Email validation
         if (user.getEmail().isEmpty()) {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "User.NotEmpty.email");
 
@@ -59,7 +59,7 @@ public class UserValidator implements Validator {
             errors.rejectValue("email", "User.size.email");
         }
 
-
+        //Password confirmation validation
         if (user.getPasswordConfirm().isEmpty()){
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordConfirm", "User.NotEmpty.passwordConfirm");
 
