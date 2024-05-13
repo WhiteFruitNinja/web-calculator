@@ -12,25 +12,19 @@ public class User {
     @Column(name = "user_id")
     private int id;
 
-    @NotBlank(message = "Username is required")
     @Column(name = "username")
     private String username;
 
     @Column(name = "role")
     private String role;
 
-    @Email(message = "Enter a valid email address")
-    @NotBlank(message = "Email is required")
     @Column(name = "email")
     private String email;
 
-
-    @NotBlank(message = "Password is required")
     @Column(name = "password")
     private String password;
 
     @Transient
-    @NotBlank(message = "Password confirmation is required")
     private String passwordConfirm;
 
     public User(int id, String username, String role, String email, String password, String passwordConfirm) {

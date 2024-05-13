@@ -19,7 +19,7 @@ public class UserValidator implements Validator {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public boolean supports(Class<?> aClass){
+    public boolean supports(Class<?> aClass) {
         return User.class.equals(aClass);
     }
 
@@ -28,42 +28,54 @@ public class UserValidator implements Validator {
         User user = (User) target;
         User userFromDB = userService.getUserByUsername(user.getUsername());
 
-        // Validacijos priemonių klasė (tuščių simbolių validavimui)
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "NotEmpty");
-        if (user.getUsername().length() < 3 || user.getUsername().length() > 32) {
+        // Tells user that these fields are required
+        if (user.getUsername().isEmpty()) {
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "User.NotEmpty.username");
+
+        } else if (user.getUsername().length() < 3 || user.getUsername().length() > 32) {
             errors.rejectValue("username", "User.size.username");
-        }
-        // Check if the password is valid
-        if (!isValidPassword(user.getPassword())) {
-            errors.rejectValue("password", "User.invalid.password");
-        }
-        if (!user.getPassword().equals(user.getPasswordConfirm())) {
-            errors.rejectValue("passwordConfirm", "User.diff.passwordConfirm");
-        }
-        // Check if the username already exists
-        if (userService.getUserByUsername(user.getUsername()) != null) {
+
+        } else if (userService.getUserByUsername(user.getUsername()) != null) { // Check if the username already exists
             errors.rejectValue("username", "User.duplicate.username");
+
         }
-        // Check if the email already exists
-        if (userService.getUserByEmail(user.getEmail()) != null) {
-            errors.rejectValue("email", "User.duplicate.email");
-        }
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotEmpty");
-        if (user.getPassword().length() < 8 || user.getPassword().length() > 21) {
+
+
+        if (user.getPassword().isEmpty()) {
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "User.NotEmpty.password");
+
+        } else if (user.getPassword().length() < 3) {
             errors.rejectValue("password", "User.size.password");
         }
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordConfirm", "NotEmpty");
-        if (user.getPassword().length() < 8 || user.getPassword().length() > 21) {
-            errors.rejectValue("passwordConfirm", "User.size.passwordConfirm");
-        }
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "NotEmpty");
-        if (user.getEmail() == null || user.getEmail().length() > 121) {
+
+
+        if (user.getEmail().isEmpty()) {
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "User.NotEmpty.email");
+
+        } else if (userService.getUserByEmail(user.getEmail()) != null) { // Check if the email already exists
+            errors.rejectValue("email", "User.duplicate.email");
+
+        } else if (user.getEmail() == null || user.getEmail().length() > 121) {
             errors.rejectValue("email", "User.size.email");
         }
+
+
+        if (user.getPasswordConfirm().isEmpty()){
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordConfirm", "User.NotEmpty.passwordConfirm");
+
+        } else if (user.getPassword().length() < 3) {
+            errors.rejectValue("passwordConfirm", "User.size.passwordConfirm");
+
+        }
+        else if (!user.getPassword().equals(user.getPasswordConfirm())) {
+            errors.rejectValue("passwordConfirm", "User.diff.passwordConfirm");
+        }
+
         // Check if the user exists
         if (userFromDB != null && !bCryptPasswordEncoder.matches(user.getPassword(), userFromDB.getPassword())) {
-            errors.rejectValue("password","User.exists.password");
+            errors.rejectValue("password", "User.exists.password");
         }
+
     }
 
     private boolean isValidPassword(String password) {
