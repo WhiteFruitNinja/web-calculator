@@ -11,6 +11,10 @@ public class Number {
     @Column(name = "number_id")
     private int id;
 
+    @ManyToOne()
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Min(value = 0, message = "Validation error: Number cannot be negative.")
     @Column(name = "number1")
     private int number1;
