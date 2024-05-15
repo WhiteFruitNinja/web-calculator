@@ -92,8 +92,10 @@ public class CalculatorController {
             modelMap.put("number2", number2);
             modelMap.put("operation", operation);
             modelMap.put("result", result);
+            modelMap.put("user_id", currentUser.getId());
+            modelMap.put("username", currentUser.getUsername());
 
-            numberService.save(new Number(number1, number2, operation, result));
+            numberService.save(new Number(number1, number2, operation, result, currentUser.getId(), currentUser.getUsername()));
 
             // prefiksas + jsp failo pavadinimas + sufiksas
             return "calculate";

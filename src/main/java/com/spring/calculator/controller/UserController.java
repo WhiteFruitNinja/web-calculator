@@ -77,7 +77,7 @@ public class UserController {
 
 
     @PostMapping("/loginUser")
-    public String loginUser(@ModelAttribute("user") User loginUser, HttpSession session, Model model, BindingResult result) {
+    public String loginUser(@Valid @ModelAttribute("user") User loginUser, HttpSession session, Model model, BindingResult result) {
         // Retrieve the user from the database based on the provided username
         User userFromDB = userService.getUserByUsername(loginUser.getUsername());
 
