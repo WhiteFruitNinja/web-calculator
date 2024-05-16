@@ -78,22 +78,20 @@ public class CalculatorController {
                 default -> 0;
             };
 
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String currentName = authentication.getName();
-            System.out.println(currentName);
-
-            User currentUser = userService.getUserByUsername(currentName);
-            System.out.println(currentUser.getId());
-
             // ModelMap objektas naudojamas siųsti reikšmes iš Spring MVC kontrolerio į JSP
             modelMap.put("number1", number1);
             modelMap.put("number2", number2);
             modelMap.put("operation", operation);
             modelMap.put("result", result);
-            modelMap.put("user_id", currentUser.getId());
-            modelMap.put("username", currentUser.getUsername());
 
-            numberService.save(new Number(number1, number2, operation, result, currentUser.getId(), currentUser.getUsername()));
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+            User user = userService.getUserByUsername(username);
+            Number savedNumbers = new Number(number1, number2, operation, result);
+            savedNumbers.setUser(user);
+
+            numberService.save(savedNumbers);
+
 
             // prefiksas + jsp failo pavadinimas + sufiksas
             return "calculate";
@@ -102,7 +100,18 @@ public class CalculatorController {
 
     @GetMapping(value = "/allNumbers")
     public String allNumbers(Model model) {
-        model.addAttribute("numbers", numberService.getAll());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        User user = userService.getUserByUsername(username);
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("admin"));
+
+        if (!isAdmin) {
+            model.addAttribute("numbers", numberService.getUserOperationsById(user.getId()));
+        } else {
+            model.addAttribute("numbers", numberService.getAll());
+        }
+
         return "allNumbers";
     }
 
@@ -116,20 +125,52 @@ public class CalculatorController {
 
     @GetMapping(value = "/delete")
     public String delete(int id, Model model) {
-        numberService.delete(id);
         model.addAttribute("number", numberService.getAll());
-        return "allNumbers";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("admin"));
+
+        if (!isAdmin) {
+            return "403";
+        }
+
+        numberService.delete(id);
+
+        return "redirect:/allNumbers";
+
     }
 
     @GetMapping(value = "/updateNumber")
     public String update(int id, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("admin"));
+
+        if (!isAdmin) {
+            return "403";
+        }
+
         model.addAttribute("number", numberService.getById(id));
+
         return "updateNumber";
     }
 
     @PostMapping(value = "/updateNum")
-    public String updateNum(@ModelAttribute("number") Number number) {
-        numberService.update(number);
+    public String updateNum(@ModelAttribute("number") Number number, BindingResult br) {
+        if (br.hasErrors()) {
+            return "updateNumber";
+        }
+        Number userByIdNumber = numberService.getById(number.getId());
+
+        number.setUser(userByIdNumber.getUser());
+
+        userByIdNumber.setNumber1(number.getNumber1());
+        userByIdNumber.setNumber2(number.getNumber2());
+        userByIdNumber.setOperation(number.getOperation());
+        userByIdNumber.setResult(number.getResult());
+
+        numberService.update(userByIdNumber);
+
         return "redirect:/showNum?id=" + number.getId();
     }
 }

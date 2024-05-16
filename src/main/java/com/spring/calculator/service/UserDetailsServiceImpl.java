@@ -1,6 +1,7 @@
 package com.spring.calculator.service;
 
 import com.spring.calculator.config.SimpleGrantedAuthority;
+import com.spring.calculator.model.MyUserDetails;
 import com.spring.calculator.model.User;
 import com.spring.calculator.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             System.out.println("User not found");
             throw new UsernameNotFoundException("User not found");
         }
-        List<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority(user.getAuthorities()));
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
+        return new MyUserDetails(user);
     }
 }

@@ -17,9 +17,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     User findByUsername(String Username);
 
-    @Query(value = "SELECT * from numbers" +
-            "INNER JOIN users " +
-            "ON numbers.user_id = users.user_id;" +
-            "WHERE users.user_id = :userId", nativeQuery = true)
-    List<Number> findUserNumber(int userId);
 }

@@ -12,14 +12,8 @@ public class Number {
     private int id;
 
     @ManyToOne()
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
-
-    @Column(name = "user_id")
-    private int user_id;
-
-    @Column(name = "username")
-    private String username;
 
     @Min(value = 0, message = "Validation error: Number cannot be negative.")
     @Column(name = "number1")
@@ -35,23 +29,19 @@ public class Number {
     @Column(name = "result")
     private int result;
 
-    public Number(int id, int number1, int number2, String operation, int result, int user_id, String username) {
-        this.user_id = user_id;
+    public Number(int id, int number1, int number2, String operation, int result) {
         this.id = id;
         this.number1 = number1;
         this.number2 = number2;
         this.operation = operation;
         this.result = result;
-        this.username = username;
     }
 
-    public Number(int number1, int number2, String operation, int result, int user_id, String username) {
-        this.user_id = user_id;
+    public Number(int number1, int number2, String operation, int result) {
         this.number1 = number1;
         this.number2 = number2;
         this.operation = operation;
         this.result = result;
-        this.username = username;
     }
 
     public Number() {
@@ -98,20 +88,12 @@ public class Number {
         this.id = id;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public User getUser() {
+        return user;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
