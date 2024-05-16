@@ -32,14 +32,13 @@ import java.util.HashMap;
 
 @EnableAutoConfiguration
 public class CalculatorController {
-    @Autowired
-    @Qualifier("UserService")
-    private UserService userService;
-
+    private final UserService userService;
     private final NumberService numberService;
     @Autowired
-    public CalculatorController(@Qualifier("NumberService") NumberService numberService) {
-        this.numberService = numberService;;
+    public CalculatorController(@Qualifier("NumberService") NumberService numberService,
+                                @Qualifier("UserService") UserService userService) {
+        this.numberService = numberService;
+        this.userService = userService;
     }
 
 
@@ -79,7 +78,6 @@ public class CalculatorController {
                 default -> 0;
             };
 
-            //TODO atrasti vartotojo id pagal jo username, issaugoti numbers user_id
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String currentName = authentication.getName();
             System.out.println(currentName);
